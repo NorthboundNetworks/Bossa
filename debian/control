@@ -1,0 +1,33 @@
+Source: bossa
+Section: electronics
+Priority: optional
+Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
+Uploaders: Scott Howard <showard@debian.org>
+Build-Depends: debhelper (>= 9.0.0), libwxgtk2.8-dev, libreadline6-dev,
+ libx11-dev, imagemagick
+Standards-Version: 3.9.4
+Homepage: http://www.shumatech.com/web/products/bossa
+Vcs-Git: git://anonscm.debian.org/debian-science/packages/bossa.git
+Vcs-Browser: http://anonscm.debian.org/gitweb/?p=debian-science/packages/bossa.git
+
+Package: bossa
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: extra-xdg-menus
+Description: Atmel SAM ARM microcontroller flash programming GUI
+ BOSSA is a flash programming utility for Atmel's SAM family of flash-based ARM
+ microcontrollers.  The motivation behind BOSSA is to create a simple, easy-to-
+ use, open source utility to replace Atmel's SAM-BA software.
+ .
+ This package contains wxWidgets GUI interface to bossa.
+
+Package: bossa-cli
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Atmel SAM ARM microcontroller flash programming utility
+ BOSSA is a flash programming utility for Atmel's SAM family of flash-based ARM
+ microcontrollers.  The motivation behind BOSSA is to create a simple, easy-to-
+ use, open source utility to replace Atmel's SAM-BA software.
+ .
+ This package contains the BOSSA command line interface and interactive shell
+ (i.e., bossac and bossash).

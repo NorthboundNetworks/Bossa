@@ -1,0 +1,4 @@
+bin/bossa usr/bin
+obj/icons usr/share/
+obj/bossa.xpm usr/share/pixmaps
+debian/bossa.desktop usr/share/applications

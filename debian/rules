@@ -1,0 +1,27 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	-mkdir -p obj/icons/hicolor/48x48/apps/ obj/icons/hicolor/32x32/apps/ \
+              obj/icons/hicolor/16x16/apps/
+	convert res/BossaIcon.ico res/bossa.png
+	mv res/bossa-3.png obj/icons/hicolor/48x48/apps/bossa.png
+	mv res/bossa-4.png obj/icons/hicolor/32x32/apps/bossa.png
+	mv res/bossa-5.png obj/icons/hicolor/16x16/apps/bossa.png
+	rm res/bossa-*
+	convert obj/icons/hicolor/32x32/apps/bossa.png obj/bossa.xpm
+	dh_auto_configure
+
+override_dh_installchangelogs:
+	dh_installchangelogs README

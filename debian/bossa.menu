@@ -1,0 +1,2 @@
+?package(bossa):needs="X11" section="Applications/Science/Electronics"\
+  title="bossa" command="/usr/bin/bossa" icon="/usr/share/pixmaps/bossa.xpm"

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=BOSSA
+Comment=Program Atmel's SAM ARM microcontrollers
+Exec=bossa
+Icon=bossa
+Terminal=false
+Categories=Development;Engineering;Electronics;
+Keywords=embedded electronics;electronics;arm;microcontroller;
+

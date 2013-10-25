@@ -1,0 +1,33 @@
+Description: turn off warnings as errors flag
+Author: Scott Howard <showard@debian.org>
+Index: bossa/Makefile
+===================================================================
+--- bossa.orig/Makefile	2013-10-14 17:36:50.675451525 -0400
++++ bossa/Makefile	2013-10-14 17:39:57.519455965 -0400
+@@ -70,8 +70,6 @@
+ 
+ MACHINE:=$(shell uname -m)
+ 
+-install: strip
+-	tar cvzf $(BINDIR)/bossa-$(MACHINE)-$(VERSION).tgz -C $(BINDIR) bossa$(EXE) bossac$(EXE) bossash$(EXE)
+ endif
+ 
+ #
+@@ -142,7 +140,7 @@
+ #
+ # CXX Flags
+ #
+-COMMON_CXXFLAGS+=-Wall -Werror -MT $@ -MD -MP -MF $(@:%.o=%.d) -DVERSION=\"$(VERSION)\" -g -O2
++COMMON_CXXFLAGS+=-Wall -MT $@ -MD -MP -MF $(@:%.o=%.d) -DVERSION=\"$(VERSION)\" -g -O2 `dpkg-buildflags --get CXXFLAGS` `dpkg-buildflags --get CPPFLAGS`
+ WX_CXXFLAGS:=$(shell wx-config --cxxflags --version=$(WXVERSION)) -DWX_PRECOMP -Wno-ctor-dtor-privacy -O2 -fno-strict-aliasing
+ BOSSA_CXXFLAGS=$(COMMON_CXXFLAGS) $(WX_CXXFLAGS) 
+ BOSSAC_CXXFLAGS=$(COMMON_CXXFLAGS)
+@@ -151,7 +149,7 @@
+ #
+ # LD Flags
+ #
+-COMMON_LDFLAGS+=-g
++COMMON_LDFLAGS+=-g `dpkg-buildflags --get LDFLAGS`
+ BOSSA_LDFLAGS=$(COMMON_LDFLAGS)
+ BOSSAC_LDFLAGS=$(COMMON_LDFLAGS)
+ BOSSASH_LDFLAGS=$(COMMON_LDFLAGS)
