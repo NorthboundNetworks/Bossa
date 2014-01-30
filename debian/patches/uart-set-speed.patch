@@ -1,0 +1,41 @@
+Description: Add internal uart speed parameter
+Author: Cristian Maglie <c.maglie@bug.st>
+Index: bossa/src/Samba.cpp
+===================================================================
+--- bossa.orig/src/Samba.cpp	2014-01-29 21:49:17.941168764 -0500
++++ bossa/src/Samba.cpp	2014-01-29 21:49:17.933168764 -0500
+@@ -142,7 +142,7 @@
+ }
+ 
+ bool
+-Samba::connect(SerialPort::Ptr port)
++Samba::connect(SerialPort::Ptr port, int bps)
+ {
+     _port = port;
+ 
+@@ -157,10 +157,10 @@
+     _isUsb = false;
+ 
+     // Try the serial port at slower speed
+-    if (_port->open(115200) && init())
++    if (_port->open(bps) && init())
+     {
+         if (_debug)
+-            printf("Connected at 115200 baud\n");
++            printf("Connected at %d baud\n", bps);
+         return true;
+     }
+ 
+Index: bossa/src/Samba.h
+===================================================================
+--- bossa.orig/src/Samba.h	2014-01-29 21:49:17.941168764 -0500
++++ bossa/src/Samba.h	2014-01-29 21:49:17.933168764 -0500
+@@ -39,7 +39,7 @@
+     Samba();
+     virtual ~Samba();
+ 
+-    bool connect(SerialPort::Ptr port);
++    bool connect(SerialPort::Ptr port, int bps=115200);
+     void disconnect();
+ 
+     void writeByte(uint32_t addr, uint8_t value);

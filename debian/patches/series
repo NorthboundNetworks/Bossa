@@ -1,1 +1,7 @@
 build_system.patch
+add-reset-command.patch
+allow-autoreset.patch
+flush-after-upload.patch
+override-usb-autodetection.patch
+uart-set-speed.patch
+

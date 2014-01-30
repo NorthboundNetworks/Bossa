@@ -1,3 +1,16 @@
+bossa (1.3~20120408-2) unstable; urgency=low
+
+  * Added a series of patches from arduino so bossa works with tose
+    devices. Many thanks to Karl Lenz for compiling Cristian Maglie's
+    patches.
+    -   debian/patches/add-reset-command.patch
+        debian/patches/allow-autoreset.patch
+        debian/patches/flush-after-upload.patch
+        debian/patches/override-usb-autodetection.patch
+        debian/patches/uart-set-speed.patch
+
+ -- Scott Howard <showard@debian.org>  Wed, 29 Jan 2014 21:58:43 -0500
+
 bossa (1.3~20120408-1) unstable; urgency=low
 
   * Initial release (Closes: #726061)

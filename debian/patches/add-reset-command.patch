@@ -1,0 +1,129 @@
+Description: Add a 'reset' command to be applied after a successful upload
+Author: Cristian Maglie <c.maglie@bug.st>
+--- a/src/Command.cpp
++++ b/src/Command.cpp
+@@ -1211,3 +1211,16 @@
+ 
+     _flasher.write(argv[1]);
+ }
++
++CommandReset::CommandReset() :
++    Command("reset",
++            "Reset the CPU. (only for supported CPU)",
++            "reset\n")
++{}
++
++void
++CommandReset::invoke(char* argv[], int argc)
++{
++    _samba.reset();
++}
++
+--- a/src/Command.h
++++ b/src/Command.h
+@@ -260,4 +260,11 @@
+     virtual void invoke(char* argv[], int argc);
+ };
+ 
++class CommandReset : public Command
++{
++public:
++    CommandReset();
++    virtual void invoke(char* argv[], int argc);
++};
++
+ #endif // _COMMAND_H
+--- a/src/Samba.cpp
++++ b/src/Samba.cpp
+@@ -22,6 +22,7 @@
+ #include <stdio.h>
+ #include <stdint.h>
+ #include <ctype.h>
++#include <unistd.h>
+ 
+ using namespace std;
+ 
+@@ -545,3 +546,21 @@
+     }
+     return cid;
+ }
++
++void
++Samba::reset(void)
++{
++    if (chipId() != 0x285e0a60) {
++        printf("Reset not supported for this CPU");
++        return;
++    }
++
++    printf("CPU reset.\n");
++    writeWord(0x400E1A00, 0xA500000D);
++
++    // Some linux users experienced a lock up if the serial
++    // port is closed while the port itself is being destroyed.
++    // This delay is here to give the time to kernel driver to
++    // sort out things before closing the port.
++    usleep(100000);
++}
+--- a/src/Samba.h
++++ b/src/Samba.h
+@@ -60,6 +60,8 @@
+     void setDebug(bool debug) { _debug = debug; }
+ 
+     const SerialPort& getSerialPort() { return *_port; }
++    
++    void reset(void);
+ 
+ private:
+     bool _debug;
+--- a/src/Shell.cpp
++++ b/src/Shell.cpp
+@@ -55,6 +55,7 @@
+     add(new CommandSecurity);
+     add(new CommandVerify);
+     add(new CommandWrite);
++    add(new CommandReset);
+ 
+     _commandList.sort();
+ }
+--- a/src/bossac.cpp
++++ b/src/bossac.cpp
+@@ -40,6 +40,7 @@
+     bool write;
+     bool read;
+     bool verify;
++    bool reset;
+     bool port;
+     bool boot;
+     bool bor;
+@@ -79,6 +80,8 @@
+     bootArg = 1;
+     bodArg = 1;
+     borArg = 1;
++
++    reset = false;
+ }
+ 
+ static BossaConfig config;
+@@ -162,6 +165,11 @@
+       'h', "help", &config.help,
+       { ArgNone },
+       "display this help text"
++    },
++    {
++      'R', "reset", &config.reset,
++      { ArgNone },
++      "reset CPU (if supported)"
+     }
+ };
+ 
+@@ -331,6 +339,9 @@
+ 
+         if (config.info)
+             flasher.info(samba);
++
++        if (config.reset)
++            samba.reset();
+     }
+     catch (exception& e)
+     {
