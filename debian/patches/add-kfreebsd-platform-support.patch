@@ -1,0 +1,185 @@
+Description: Add support for the FreeBSD platform
+Author: Karl Lenz <xorangekiller@gmail.com>
+Index: bossa/src/FreeBSDPortFactory.cpp
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ bossa/src/FreeBSDPortFactory.cpp	2014-02-01 12:46:00.691479994 -0500
+@@ -0,0 +1,89 @@
++///////////////////////////////////////////////////////////////////////////////
++// BOSSA
++//
++// Copyright (C) 2011-2012 ShumaTech http://www.shumatech.com/
++//
++// This program is free software: you can redistribute it and/or modify
++// it under the terms of the GNU General Public License as published by
++// the Free Software Foundation, either version 3 of the License, or
++// (at your option) any later version.
++//
++// This program is distributed in the hope that it will be useful,
++// but WITHOUT ANY WARRANTY; without even the implied warranty of
++// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++// GNU General Public License for more details.
++//
++// You should have received a copy of the GNU General Public License
++// along with this program.  If not, see <http://www.gnu.org/licenses/>.
++///////////////////////////////////////////////////////////////////////////////
++#include "FreeBSDPortFactory.h"
++#include "PosixSerialPort.h"
++
++#include <string.h>
++#include <stdio.h>
++
++#include <string>
++
++FreeBSDPortFactory::FreeBSDPortFactory()
++{
++    _dir = opendir("/dev");
++}
++
++FreeBSDPortFactory::~FreeBSDPortFactory()
++{
++    if (_dir)
++        closedir(_dir);
++}
++
++SerialPort::Ptr
++FreeBSDPortFactory::create(const std::string& name)
++{
++    bool isUsb = false;
++
++    if (name.find("ttyU") != std::string::npos)
++        isUsb = true;
++
++    return create(name, isUsb);
++}
++
++SerialPort::Ptr
++FreeBSDPortFactory::create(const std::string& name, bool isUsb)
++{
++    return SerialPort::Ptr(new PosixSerialPort(name, isUsb));
++}
++
++std::string
++FreeBSDPortFactory::begin()
++{
++    if (!_dir)
++        return end();
++
++    rewinddir(_dir);
++
++    return next();
++}
++
++std::string
++FreeBSDPortFactory::next()
++{
++    struct dirent* entry;
++
++    if (!_dir)
++        return end();
++
++    while ((entry = readdir(_dir)))
++    {
++        if (strncmp("ttyU", entry->d_name, sizeof("ttyU") - 1) == 0)
++            return std::string(entry->d_name);
++        else if (strncmp("ttyS", entry->d_name, sizeof("ttyS") - 1) == 0)
++            return std::string(entry->d_name);
++    }
++
++    return end();
++}
++
++std::string
++FreeBSDPortFactory::end()
++{
++    return std::string();
++}
+Index: bossa/src/FreeBSDPortFactory.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ bossa/src/FreeBSDPortFactory.h	2014-02-01 12:46:00.691479994 -0500
+@@ -0,0 +1,48 @@
++///////////////////////////////////////////////////////////////////////////////
++// BOSSA
++//
++// Copyright (C) 2011-2012 ShumaTech http://www.shumatech.com/
++//
++// This program is free software: you can redistribute it and/or modify
++// it under the terms of the GNU General Public License as published by
++// the Free Software Foundation, either version 3 of the License, or
++// (at your option) any later version.
++//
++// This program is distributed in the hope that it will be useful,
++// but WITHOUT ANY WARRANTY; without even the implied warranty of
++// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++// GNU General Public License for more details.
++//
++// You should have received a copy of the GNU General Public License
++// along with this program.  If not, see <http://www.gnu.org/licenses/>.
++///////////////////////////////////////////////////////////////////////////////
++#ifndef _FREEBSDPORTFACTORY_H
++#define _FREEBSDPORTFACTORY_H
++
++#include "SerialPort.h"
++
++#include <sys/types.h>
++#include <dirent.h>
++
++#include <string>
++
++
++class FreeBSDPortFactory
++{
++public:
++    FreeBSDPortFactory();
++    virtual ~FreeBSDPortFactory();
++
++    virtual std::string begin();
++    virtual std::string end();
++    virtual std::string next();
++
++    virtual SerialPort::Ptr create(const std::string& name);
++    virtual SerialPort::Ptr create(const std::string& name, bool isUsb);
++
++private:
++    std::string _empty;
++    DIR* _dir;
++};
++
++#endif // _FREEBSDPORTFACTORY_H
+Index: bossa/src/PortFactory.h
+===================================================================
+--- bossa.orig/src/PortFactory.h	2014-02-01 12:46:00.699479994 -0500
++++ bossa/src/PortFactory.h	2014-02-01 12:46:00.691479994 -0500
+@@ -43,6 +43,9 @@
+ #elif defined(__linux__)
+ #include "LinuxPortFactory.h"
+ typedef LinuxPortFactory PortFactory;
++#elif defined(__FreeBSD_kernel__)
++#include "FreeBSDPortFactory.h"
++typedef FreeBSDPortFactory PortFactory;
+ #elif defined(__APPLE__)
+ #include "OSXPortFactory.h"
+ typedef OSXPortFactory PortFactory;
+Index: bossa/Makefile
+===================================================================
+--- bossa.orig/Makefile	2014-02-01 12:46:00.699479994 -0500
++++ bossa/Makefile	2014-02-01 12:47:02.099481453 -0500
+@@ -73,6 +73,17 @@
+ endif
+ 
+ #
++# kFreeBSD rules
++#
++ifeq ($(OS),$(filter $(OS),GNU/kFr FreeBSD))
++COMMON_SRCS+=PosixSerialPort.cpp FreeBSDPortFactory.cpp
++COMMON_LIBS=-Wl,--as-needed
++
++MACHINE:=$(shell uname -m)
++
++endif
++
++#
+ # OS X rules
+ #
+ ifeq ($(OS),Darwin)

@@ -5,7 +5,7 @@ Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.
 Uploaders: Scott Howard <showard@debian.org>
 Build-Depends: debhelper (>= 9.0.0), libwxgtk2.8-dev, libreadline6-dev,
  libx11-dev, imagemagick
-Standards-Version: 3.9.4
+Standards-Version: 3.9.5
 Homepage: http://www.shumatech.com/web/products/bossa
 Vcs-Git: git://anonscm.debian.org/debian-science/packages/bossa.git
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=debian-science/packages/bossa.git

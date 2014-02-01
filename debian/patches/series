@@ -4,4 +4,5 @@ allow-autoreset.patch
 flush-after-upload.patch
 override-usb-autodetection.patch
 uart-set-speed.patch
-
+add-kfreebsd-platform-support.patch
+no_X11_link.patch
