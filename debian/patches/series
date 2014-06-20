@@ -6,3 +6,4 @@ override-usb-autodetection.patch
 uart-set-speed.patch
 add-kfreebsd-platform-support.patch
 no_X11_link.patch
+wx3.0-compat.patch

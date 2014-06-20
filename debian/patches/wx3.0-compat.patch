@@ -1,0 +1,15 @@
+Description: Fix to build with wxwidgets3.0
+Author: Olly Betts <olly@survex.com>
+Last-Update: 2014-06-14
+
+--- bossa-1.3~20120408.orig/Makefile
++++ bossa-1.3~20120408/Makefile
+@@ -4,7 +4,7 @@
+ # Version
+ #
+ VERSION=1.3a
+-WXVERSION=2.8
++WXVERSION=3.0
+ 
+ #
+ # Source files

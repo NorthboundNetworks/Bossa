@@ -1,3 +1,12 @@
+bossa (1.3~20120408-5) unstable; urgency=low
+
+  [ Olly Betts ]
+  * Update to use wxWidgets 3.0 (new patch: wx3.0-compat.patch)
+    Closes: #751554
+  * debian/control: Fix typo in bossa package description.
+
+ -- Scott Howard <showard@debian.org>  Sun, 15 Jun 2014 20:53:24 -0400
+
 bossa (1.3~20120408-4) unstable; urgency=low
 
   * Updated bossac manpage, thanks to Karl Lenz (Closes: #737280)

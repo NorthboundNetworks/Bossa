@@ -3,7 +3,7 @@ Section: electronics
 Priority: optional
 Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
 Uploaders: Scott Howard <showard@debian.org>
-Build-Depends: debhelper (>= 9.0.0), libwxgtk2.8-dev, libreadline6-dev,
+Build-Depends: debhelper (>= 9.0.0), libwxgtk3.0-dev, libreadline6-dev,
  libx11-dev, imagemagick
 Standards-Version: 3.9.5
 Homepage: http://www.shumatech.com/web/products/bossa
@@ -19,7 +19,7 @@ Description: Atmel SAM ARM microcontroller flash programming GUI
  microcontrollers.  The motivation behind BOSSA is to create a simple, easy-to-
  use, open source utility to replace Atmel's SAM-BA software.
  .
- This package contains wxWidgets GUI interface to bossa.
+ This package contains the wxWidgets GUI interface to bossa.
 
 Package: bossa-cli
 Architecture: any
