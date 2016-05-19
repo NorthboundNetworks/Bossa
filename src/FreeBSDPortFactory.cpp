@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ///////////////////////////////////////////////////////////////////////////////
-#include "LinuxPortFactory.h"
+#include "FreeBSDPortFactory.h"
 #include "PosixSerialPort.h"
 
 #include <string.h>
@@ -24,37 +24,36 @@
 
 #include <string>
 
-LinuxPortFactory::LinuxPortFactory()
+FreeBSDPortFactory::FreeBSDPortFactory()
 {
     _dir = opendir("/dev");
 }
 
-LinuxPortFactory::~LinuxPortFactory()
+FreeBSDPortFactory::~FreeBSDPortFactory()
 {
     if (_dir)
         closedir(_dir);
 }
 
 SerialPort::Ptr
-LinuxPortFactory::create(const std::string& name)
+FreeBSDPortFactory::create(const std::string& name)
 {
     bool isUsb = false;
 
-    if (name.find("ttyUSB") != std::string::npos ||
-        name.find("ttyACM") != std::string::npos)
+    if (name.find("ttyU") != std::string::npos)
         isUsb = true;
 
     return create(name, isUsb);
 }
 
 SerialPort::Ptr
-LinuxPortFactory::create(const std::string& name, bool isUsb)
+FreeBSDPortFactory::create(const std::string& name, bool isUsb)
 {
     return SerialPort::Ptr(new PosixSerialPort(name, isUsb));
 }
 
 std::string
-LinuxPortFactory::begin()
+FreeBSDPortFactory::begin()
 {
     if (!_dir)
         return end();
@@ -65,7 +64,7 @@ LinuxPortFactory::begin()
 }
 
 std::string
-LinuxPortFactory::next()
+FreeBSDPortFactory::next()
 {
     struct dirent* entry;
 
@@ -74,9 +73,7 @@ LinuxPortFactory::next()
 
     while ((entry = readdir(_dir)))
     {
-        if (strncmp("ttyUSB", entry->d_name, sizeof("ttyUSB") - 1) == 0)
-            return std::string(entry->d_name);
-        else if (strncmp("ttyACM", entry->d_name, sizeof("ttyACM") - 1) == 0)
+        if (strncmp("ttyU", entry->d_name, sizeof("ttyU") - 1) == 0)
             return std::string(entry->d_name);
         else if (strncmp("ttyS", entry->d_name, sizeof("ttyS") - 1) == 0)
             return std::string(entry->d_name);
@@ -86,7 +83,7 @@ LinuxPortFactory::next()
 }
 
 std::string
-LinuxPortFactory::end()
+FreeBSDPortFactory::end()
 {
     return std::string();
 }

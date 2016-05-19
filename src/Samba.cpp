@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <ctype.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -55,6 +56,12 @@ Samba::init()
     uint32_t cid;
 
     _port->timeout(TIMEOUT_QUICK);
+
+    // Allows Arduino auto-reset
+    usleep(3000000);
+    // Flush garbage
+    uint8_t dummy[1024];
+    _port->read(dummy, 1024);
 
     if (!_isUsb)
     {
@@ -135,7 +142,7 @@ Samba::init()
 }
 
 bool
-Samba::connect(SerialPort::Ptr port)
+Samba::connect(SerialPort::Ptr port, int bps)
 {
     _port = port;
 
@@ -150,10 +157,10 @@ Samba::connect(SerialPort::Ptr port)
     _isUsb = false;
 
     // Try the serial port at slower speed
-    if (_port->open(115200) && init())
+    if (_port->open(bps) && init())
     {
         if (_debug)
-            printf("Connected at 115200 baud\n");
+            printf("Connected at %d baud\n", bps);
         return true;
     }
 
@@ -544,4 +551,22 @@ Samba::chipId()
             cid = readWord(0x400e0940);
     }
     return cid;
+}
+
+void
+Samba::reset(void)
+{
+    if (chipId() != 0x285e0a60) {
+        printf("Reset not supported for this CPU");
+        return;
+    }
+
+    printf("CPU reset.\n");
+    writeWord(0x400E1A00, 0xA500000D);
+
+    // Some linux users experienced a lock up if the serial
+    // port is closed while the port itself is being destroyed.
+    // This delay is here to give the time to kernel driver to
+    // sort out things before closing the port.
+    usleep(100000);
 }

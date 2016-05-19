@@ -16,8 +16,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef _OSXPORTFACTORY_H
-#define _OSXPORTFACTORY_H
+#ifndef _FREEBSDPORTFACTORY_H
+#define _FREEBSDPORTFACTORY_H
 
 #include "SerialPort.h"
 
@@ -27,11 +27,11 @@
 #include <string>
 
 
-class OSXPortFactory
+class FreeBSDPortFactory
 {
 public:
-    OSXPortFactory();
-    virtual ~OSXPortFactory();
+    FreeBSDPortFactory();
+    virtual ~FreeBSDPortFactory();
 
     virtual std::string begin();
     virtual std::string end();
@@ -45,4 +45,4 @@ private:
     DIR* _dir;
 };
 
-#endif // _OSXPORTFACTORY_H
+#endif // _FREEBSDPORTFACTORY_H

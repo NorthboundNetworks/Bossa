@@ -34,6 +34,7 @@ public:
     virtual std::string next() = 0;
 
     virtual SerialPort::Ptr create(const std::string& name) = 0;
+    virtual SerialPort::Ptr create(const std::string& name, bool isUsb) = 0;
 };
 
 #if defined(__WIN32__)
@@ -42,6 +43,9 @@ typedef WinPortFactory PortFactory;
 #elif defined(__linux__)
 #include "LinuxPortFactory.h"
 typedef LinuxPortFactory PortFactory;
+#elif defined(__FreeBSD_kernel__)
+#include "FreeBSDPortFactory.h"
+typedef FreeBSDPortFactory PortFactory;
 #elif defined(__APPLE__)
 #include "OSXPortFactory.h"
 typedef OSXPortFactory PortFactory;

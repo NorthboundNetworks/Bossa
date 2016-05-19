@@ -39,7 +39,7 @@ public:
     Samba();
     virtual ~Samba();
 
-    bool connect(SerialPort::Ptr port);
+    bool connect(SerialPort::Ptr port, int bps=115200);
     void disconnect();
 
     void writeByte(uint32_t addr, uint8_t value);
@@ -60,6 +60,8 @@ public:
     void setDebug(bool debug) { _debug = debug; }
 
     const SerialPort& getSerialPort() { return *_port; }
+    
+    void reset(void);
 
 private:
     bool _debug;

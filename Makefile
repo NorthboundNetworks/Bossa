@@ -4,7 +4,7 @@
 # Version
 #
 VERSION=1.3a
-WXVERSION=2.8
+WXVERSION=3.0
 
 #
 # Source files
@@ -66,12 +66,22 @@ endif
 ifeq ($(OS),Linux)
 COMMON_SRCS+=PosixSerialPort.cpp LinuxPortFactory.cpp
 COMMON_LIBS=-Wl,--as-needed
-WX_LIBS+=-lX11
 
 MACHINE:=$(shell uname -m)
 
 install: strip
 	tar cvzf $(BINDIR)/bossa-$(MACHINE)-$(VERSION).tgz -C $(BINDIR) bossa$(EXE) bossac$(EXE) bossash$(EXE)
+endif
+
+#
+# kFreeBSD rules
+#
+ifeq ($(OS),$(filter $(OS),GNU/kFr FreeBSD))
+COMMON_SRCS+=PosixSerialPort.cpp FreeBSDPortFactory.cpp
+COMMON_LIBS=-Wl,--as-needed
+
+MACHINE:=$(shell uname -m)
+
 endif
 
 #
