@@ -23,6 +23,7 @@
 
 #include "Samba.h"
 #include "Flash.h"
+#include "ChipId.h"
 
 class FlashFactory
 {
@@ -30,7 +31,7 @@ public:
     FlashFactory();
     virtual ~FlashFactory();
 
-    Flash::Ptr create(Samba& samba, uint32_t chipId);
+    Flash::Ptr create(Samba& samba, ChipId chipId);
 };
 
 #endif // _FLASHFACTORY_H

@@ -275,7 +275,7 @@ Flasher::info(Samba& samba)
     bool first;
 
     printf("Device       : %s\n", _flash->name().c_str());
-    printf("Chip ID      : %08x\n", samba.chipId());
+    printf("Chip ID      : %s\n", samba.chipId().c_str());
     printf("Version      : %s\n", samba.version().c_str());
     printf("Address      : %d\n", _flash->address());
     printf("Pages        : %d\n", _flash->numPages());

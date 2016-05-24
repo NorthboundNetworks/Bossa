@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "ChipId.h"
 #include "CmdOpts.h"
 #include "Samba.h"
 #include "PortFactory.h"
@@ -311,11 +312,13 @@ main(int argc, char* argv[])
             printf("Device found on %s\n", port.c_str());
         }
 
-        uint32_t chipId = samba.chipId();
+        ChipId chipId = samba.chipId();
         Flash::Ptr flash = flashFactory.create(samba, chipId);
         if (flash.get() == NULL)
         {
-            fprintf(stderr, "Flash for chip ID %08x is not supported\n", chipId);
+            fprintf(stderr,
+                    "Flash for chip ID %s is not supported\n",
+                    chipId.c_str());
             return 1;
         }
 

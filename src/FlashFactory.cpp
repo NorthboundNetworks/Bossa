@@ -20,6 +20,7 @@
 
 #include "EfcFlash.h"
 #include "EefcFlash.h"
+#include "ChipId.h"
 
 FlashFactory::FlashFactory()
 {
@@ -30,11 +31,11 @@ FlashFactory::~FlashFactory()
 }
 
 Flash::Ptr
-FlashFactory::create(Samba& samba, uint32_t chipId)
+FlashFactory::create(Samba& samba, ChipId chipId)
 {
     Flash* flash;
 
-    switch (chipId & 0x7fffffe0)
+    switch (chipId.identity())
     {
     //
     // SAM7SE

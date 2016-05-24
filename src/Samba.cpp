@@ -26,6 +26,8 @@
 
 using namespace std;
 
+#include "ChipId.h"
+
 // XMODEM definitions
 #define BLK_SIZE    128
 #define MAX_RETRIES 5
@@ -53,7 +55,7 @@ bool
 Samba::init()
 {
     uint8_t cmd[3];
-    uint32_t cid;
+    ChipId cid;
 
     _port->timeout(TIMEOUT_QUICK);
 
@@ -97,11 +99,12 @@ Samba::init()
 
     _port->timeout(TIMEOUT_NORMAL);
 
-    if (_debug)
-        printf("chipId=%#08x\n", cid);
+    if (_debug) {
+        printf("chipId=%s\n", cid.c_str());
+    }
 
-    uint8_t eproc = (cid >> 5) & 0x7;
-    uint8_t arch = (cid >> 20) & 0xff;
+    uint8_t eproc = cid.eproc();
+    uint8_t arch = cid.arch();
 
     // Check for ARM7TDMI processor
     if (eproc == 2)
@@ -532,25 +535,31 @@ Samba::version()
     return ver;
 }
 
-uint32_t
+const ChipId
 Samba::chipId()
 {
     uint32_t vector;
-    uint32_t cid;
+    uint32_t cidr;
+    uint32_t exid;
 
     // Read the ARM reset vector
     vector = readWord(0x0);
 
     // If the vector is a ARM7TDMI branch, then assume Atmel SAM7 registers
-    if ((vector & 0xff000000) == 0xea000000)
-        cid = readWord(0xfffff240);
+    if ((vector & 0xff000000) == 0xea000000) {
+        cidr = readWord(0xfffff240);
+        exid = readWord(0xfffff244);
+    }  
     // Else use the Atmel SAM3 registers
     else {
-        cid = readWord(0x400e0740);
-        if (cid == 0)
-            cid = readWord(0x400e0940);
+        cidr = readWord(0x400e0740);
+        exid = readWord(0x400e0744);
+        if (cidr == 0) {          
+            cidr = readWord(0x400e0940);
+            exid = readWord(0x400e0944);
+        }
     }
-    return cid;
+    return ChipId(cidr, exid);
 }
 
 void

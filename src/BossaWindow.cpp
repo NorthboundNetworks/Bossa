@@ -22,6 +22,7 @@
 #include "BossaInfo.h"
 
 #include "FlashFactory.h"
+#include "ChipId.h"
 
 #include <string>
 
@@ -252,7 +253,7 @@ BossaWindow::CreateFlash()
     Samba& samba = wxGetApp().samba;
     Flash::Ptr& flash = wxGetApp().flash;
     FlashFactory flashFactory;
-    uint32_t chipId;
+    ChipId chipId;
 
     try
     {
@@ -269,7 +270,7 @@ BossaWindow::CreateFlash()
     if (flash.get() == NULL)
     {
         Disconnected();
-        Error(wxString::Format(wxT("Chip ID 0x%08x is not supported"), chipId));
+        Error(wxString::Format(wxT("Chip ID %s is not supported"), chipId.c_str()));
         return;
     }
 

@@ -26,6 +26,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+#include "ChipId.h"
 #include "Command.h"
 #include "arm-dis.h"
 
@@ -153,12 +154,12 @@ Command::flashable()
 bool
 Command::createFlash()
 {
-    uint32_t chipId = _samba.chipId();
+    ChipId chipId = _samba.chipId();
 
     _flash = _flashFactory.create(_samba, chipId);
     if (_flash.get() == NULL)
     {
-        printf("Flash for chip ID %08x is not supported\n", chipId);
+        printf("Flash for chip ID %s is not supported\n", chipId.c_str());
         return false;
     }
 
@@ -850,7 +851,7 @@ void
 CommandPio::invoke(char* argv[], int argc)
 {
     uint32_t line;
-    uint32_t chipId;
+    ChipId chipId;
     uint32_t eproc;
     uint32_t arch;
     uint32_t addr = 0;
@@ -889,8 +890,8 @@ CommandPio::invoke(char* argv[], int argc)
     port = tolower(argv[1][1]);
 
     chipId = _samba.chipId();
-    eproc = (chipId >> 5) & 0x7;
-    arch = (chipId >> 20) & 0xff;
+    eproc = chipId.eproc();
+    arch = chipId.arch();
 
     // Check for Cortex-M3 register set
     if (eproc == 3)

@@ -25,6 +25,7 @@
 #include <memory>
 
 #include "SerialPort.h"
+#include "ChipId.h"
 
 class SambaError : public std::exception
 {
@@ -55,7 +56,7 @@ public:
 
     std::string version();
 
-    uint32_t chipId();
+    const ChipId chipId();
 
     void setDebug(bool debug) { _debug = debug; }
 
