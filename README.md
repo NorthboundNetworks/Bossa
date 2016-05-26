@@ -2,12 +2,13 @@
 
 ## Why?
 
-Atmel's SAM-series systems-on-chip contain a simple ROM monitor named
-‘SAM-BA’ (“SAM Boot Assistant”). This monitor has just enough function
-to be able to load a program which can then be used to load a file to
-copy into the flash memory of the SoC.  When the SoC is booted from
-ROM then SAM-BA can be accessed from the device's serial port or from
-its USB port.
+When booted from ROM Atmel's SAM-series systems-on-chip run a simple
+ROM monitor named ‘SAM-BA’ (“SAM Boot Assistant”). This monitor can
+read and alter memory, transfer data, and run a program.
+
+Those functions can be used to transfer a file across RS-232 or USB
+and, to write that file into flash, and to change the boot options to
+start from flash.
 
 Atmel distribute a graphical client program for the SAM-BA ROM
 monitor, confusingly also named ‘SAM-BA’. That client program makes
@@ -34,7 +35,7 @@ taken from Debian Science Maintainers'
 
 The aim is to add support for the
 [Zodiac FX](http://northboundnetworks.com/products/zodiac-fx)
-OpenFlow switch. This is a SAM4-based board design and sold by
+OpenFlow switch. This is a SAM4-based board designed and sold by
 [Northbound Networks](http://northboundnetworks.com/).
 
 ## Status
@@ -95,7 +96,7 @@ For the moment, development is done in the ‘master’ branch.  We'll
 base the *Release notes* on the text in your pull request.
 
 If using GitHub is not desirable then
-[raise an issue tagged as an ‘enhancement’]((https://github.com/NorthboundNetworks/Bossa/issues/new?labels=enhancement)
+[raise an issue tagged as an ‘enhancement’](https://github.com/NorthboundNetworks/Bossa/issues/new?labels=enhancement)
 and make a comment containing the patch or the details of how to
 access the code. If you are including a patch then please attach it as
 a file to prevent GitHub from mangling it.
