@@ -3,7 +3,14 @@
 # 
 # Version
 #
-VERSION=1.3a
+VERSION_SOURCE=https://github.com/NorthboundNetworks/Bossa
+VERSION_MAJOR=2
+VERSION_MINOR=0
+# Thanks to Jayson <http://programmers.stackexchange.com/users/55834/jayson>
+# <http://programmers.stackexchange.com/questions/141973/how-do-you-achieve-a-numeric-versioning-scheme-with-git>
+VERSION_GIT_COMMITS=$(shell git rev-list HEAD | wc -l)
+VERSION_GIT_LATEST=$(shell git rev-parse HEAD)
+VERSION=$(VERSION_SOURCE):$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_GIT_COMMITS).r$(VERSION_GIT_LATEST)
 WXVERSION=3.0
 
 #
