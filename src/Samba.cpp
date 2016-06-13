@@ -107,38 +107,58 @@ Samba::init()
     uint8_t arch = cid.arch();
 
     // Check for ARM7TDMI processor
-    if (eproc == 2)
+    if (eproc == CHIPID_CIDR_EPROC_ARM7TDMI)
     {
         // Check for SAM7 architecture
         if (arch >= 0x70 && arch <= 0x76)
             return true;
-        if (_debug)
+        if (_debug) {
             printf("Unsupported ARM7TDMI architecture\n");
+            printf("\tCHIPID_CIDR,CHIPID_EXID=%s\n", cid.c_str());
+        }
     }
     // Check for Cortex-M3 processor
-    else if (eproc == 3)
+    else if (eproc == CHIPID_CIDR_EPROC_CM3)
     {
         // Check for SAM3 architecture
         if (arch >= 0x80 && arch <= 0x8a)
             return true;
         if (arch >= 0x93 && arch <= 0x9a)
             return true;
-        if (_debug)
+        if (_debug) {
             printf("Unsupported Cortex-M3 architecture\n");
+            printf("\tCHIPID_CIDR,CHIPID_EXID=%s\n", cid.c_str());
+        }
+
     }
     // Check for ARM920T processor
-    else if (eproc == 4)
+    else if (eproc == CHIPID_CIDR_EPROC_ARM920T)
     {
         // Check for SAM9XE architecture
         if (arch == 0x29)
             return true;
-        if (_debug)
+        if (_debug) {
             printf("Unsupported ARM920T architecture\n");
+            printf("\tCHIPID_CIDR,CHIPID_EXID=%s\n", cid.c_str());
+        }
+    }
+    // Check for Cortex-M4 processor
+    else if (eproc == CHIPID_CIDR_EPROC_CM4) {
+        if (arch == 0x3c) {
+            // SAM4E
+            return true;
+        }
+        if (_debug) {
+            printf("Unsupported Cortex-M4 architecture\n");
+            printf("\tCHIPID_CIDR,CHIPID_EXID=%s\n", cid.c_str());
+        }
     }
     else
     {
-        if (_debug)
+        if (_debug) {
             printf("Unsupported processor\n");
+            printf("\tCHIPID_CIDR,CHIPID_EXID=%s\n", cid.c_str());
+        }
     }
 
     return false;
@@ -535,7 +555,7 @@ Samba::version()
     return ver;
 }
 
-const ChipId
+ChipId
 Samba::chipId()
 {
     uint32_t vector;
@@ -554,7 +574,7 @@ Samba::chipId()
     else {
         cidr = readWord(0x400e0740);
         exid = readWord(0x400e0744);
-        if (cidr == 0) {          
+        if (cidr == 0) {
             cidr = readWord(0x400e0940);
             exid = readWord(0x400e0944);
         }

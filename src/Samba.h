@@ -56,7 +56,7 @@ public:
 
     std::string version();
 
-    const ChipId chipId();
+    ChipId chipId();
 
     void setDebug(bool debug) { _debug = debug; }
 

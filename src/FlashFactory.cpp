@@ -202,6 +202,64 @@ FlashFactory::create(Samba& samba, ChipId chipId)
     case 0x329973a0 :
         flash = new EefcFlash(samba, "ATSAM9XE128", 0x200000, 256, 512, 1, 8, 0x300000, 0x303000, 0xfffffa00, true);
         break;
+    //
+    // SAM4E
+    //   Cortex-M4 (thumb)
+    //   128KB SRAM
+    //   SAM4E16E, SAM4E16C: 1024KB flash
+    //   SAM4E8E, SAM4E8C: 512KB flash
+    //
+    case 0x23cc0ce0:
+        flash = NULL;
+        if (chipId.product_number() == 0x9000) {  // SAM4E
+            int pages = 0;
+            char const *name = NULL;
+            int regions = 0;
+            if (chipId.flash_size() == CHIPID_EXID_FLASH_SIZE_512K) {
+                pages = 1024;  // = 512K flash / 512 page_size / 1 plane
+                name = "SAM4E8";
+                regions = 512 / 8;
+            }
+            if (chipId.flash_size() == CHIPID_EXID_FLASH_SIZE_1024K) {
+                pages = 2048;  // = 1024K flash / 512 page_size / 1 plane
+                name = "SAM4E16";
+                regions = 1024 / 8;
+            }
+            if (pages && name) {
+                flash = new EefcFlash(samba,
+                                      name,
+                                      // addr: start of flash memory
+                                      0x00400000,
+                                      // pages: number of pages in flash memory
+                                      //  flash memory bytes
+                                      //    = pages * size * planes
+                                      pages,
+                                      // size: size of a flash memory page
+                                      512,
+                                      // planes: number of planes of flash
+                                      1,
+                                      // lockRegions: number of lock regions
+                                      //  8KB per lock region on SAM4, so
+                                      //  = flash memory bytes / 8KB
+                                      regions,
+                                      // user: user space program base
+                                      0x20001000,
+                                      // stack: highest address of stack
+                                      //  it grows downwards
+                                      //  typically highest address of SRAM
+                                      //   = 0x20000000 + RAM size
+                                      0x20020000,
+                                      // regs: base of flash controller
+                                      //       registers
+                                      0x400e0a00,
+                                      // canBrownout
+                                      false);
+            }
+        }
+        break;
+    //
+    // Not found
+    //        
     default:
         flash = NULL;
         break;

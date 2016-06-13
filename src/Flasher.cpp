@@ -274,16 +274,28 @@ Flasher::info(Samba& samba)
 {
     bool first;
 
-    printf("Device       : %s\n", _flash->name().c_str());
-    printf("Chip ID      : %s\n", samba.chipId().c_str());
-    printf("Version      : %s\n", samba.version().c_str());
-    printf("Address      : %d\n", _flash->address());
-    printf("Pages        : %d\n", _flash->numPages());
-    printf("Page Size    : %d bytes\n", _flash->pageSize());
-    printf("Total Size   : %dKB\n", _flash->numPages() * _flash->pageSize() / 1024);
-    printf("Planes       : %d\n", _flash->numPlanes());
-    printf("Lock Regions : %d\n", _flash->lockRegions());
-    printf("Locked       : ");
+    printf("Bossa version: " VERSION "\n");
+    printf("Device model: %s\n",
+           _flash->name().c_str());
+    printf("Device CHIPID_CIDR,CHIPID_EXID: %s\n",
+           samba.chipId().c_str());
+    printf("SAM-BA ROM monitor version: %s\n",
+           samba.version().c_str());
+    printf("Flash memory lowest address: %d (0x%08x)\n",
+           _flash->address(),
+           _flash->address());
+    printf("Flash memory pages: %d\n",
+           _flash->numPages());
+    printf("Flash memory pages size: %d bytes\n",
+           _flash->pageSize());
+    printf("Flash memory size: %dKB\n",
+           _flash->numPages() * _flash->pageSize() / 1024);
+    printf("Flash memory number of planes: %d\n",
+           _flash->numPlanes());
+    printf("Flash memory number of lock regions: %d\n",
+           _flash->lockRegions());
+    
+    printf("Flash programming locked: ");
     first = true;
     for (uint32_t region = 0; region < _flash->lockRegions(); region++)
     {
@@ -294,11 +306,60 @@ Flasher::info(Samba& samba)
         }
     }
     printf("%s\n", first ? "none" : "");
-    printf("Security     : %s\n", _flash->getSecurity() ? "true" : "false");
-    if (_flash->canBootFlash())
-        printf("Boot Flash   : %s\n", _flash->getBootFlash() ? "true" : "false");
-    if (_flash->canBod())
-        printf("BOD          : %s\n", _flash->getBod() ? "true" : "false");
-    if (_flash->canBor())
-        printf("BOR          : %s\n", _flash->getBor() ? "true" : "false");
+    
+    printf("Flash memory security: %s\n",
+           _flash->getSecurity() ? "true" : "false");
+
+    const char *boot_available;
+    const char *boot_on;
+    if (_flash->canBootFlash()) {
+        boot_available = "available";
+        if (_flash->getBootFlash()) {
+            boot_on = ", on";
+        }
+        else {
+            boot_on = ", off";
+        }
+    }
+    else {
+        boot_available = "unavailable";
+        boot_on = "";
+    }
+    printf("Boot from flash: %s%s\n",
+           boot_available,
+           boot_on);
+
+    const char *bod_available;
+    const char *bod_on;
+    if (_flash->canBod()) {
+        bod_available = "available";
+        if ( _flash->getBod()) {
+            bod_on = ", on";
+        }
+        else {
+            bod_on = ", off";
+        }
+    }
+    else {
+        bod_available = "unavailable";
+        bod_on = "";
+    }
+    printf("Brown-out detection: %s%s\n",
+           bod_available,
+           bod_on);
+
+    const char *bor_available = "unavailable";
+    const char *bor_on = "";
+    if (_flash->canBor()) {
+        bor_available = "available";
+        if (_flash->getBor()) {
+            bor_on = ", on";
+        }
+        else {
+            bor_on = ", off";
+        }
+    }
+    printf("Brown-out reset: %s%s\n",
+           bor_available,
+           bor_on);
 }

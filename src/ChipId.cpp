@@ -155,10 +155,11 @@ uint32_t ChipId::product_number() const {
                    CHIPID_EXID_PRODUCT_NUMBER_MASK);
 }
 
-// Synthetic values
+// Give a CHIPID_CIDR suitable for identifying this model.
+// So mask out EXT and VERSION.
 uint32_t ChipId::identity() const {
     // Exclude EXT and VERSION
-    return cidr & 0x7ffffffe0;
+    return cidr & 0x7fffffe0;
 }
 
 // Return string representation
@@ -166,9 +167,10 @@ std::string ChipId::str() const {
     std::stringstream s;
     std::ios_base::fmtflags original_flags = s.flags();
     s.setf(ios_base::hex, ios_base::basefield);
-    s << "0x" << cidr;
+    s.setf(ios_base::showbase);
+    s << cidr;
     if (this->ext() || exid != 0) {
-        s << ",0x" << exid;
+        s << "," << std::setw(8) << exid;
     }
     s.flags(original_flags);
     return s.str();

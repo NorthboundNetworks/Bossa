@@ -63,7 +63,7 @@ EefcFlash::EefcFlash(Samba& samba,
 {
     assert(planes == 1 || planes == 2);
     assert(pages <= 2048);
-    assert(lockRegions <= 32);
+    // GDT assert(lockRegions <= 32);
 
     // SAM3 Errata (FWS must be 6)
     _samba.writeWord(EEFC0_FMR, 0x6 << 8);
